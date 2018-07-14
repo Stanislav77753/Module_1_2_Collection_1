@@ -16,15 +16,20 @@ public class MyDynamicArrayList implements Iterable {
     }
 
     public MyDynamicArrayList(int initCapacity){
+        if(initCapacity < 0){
+            throw new IllegalArgumentException("Enter a number greater than -1");
+        }
         capacity = initCapacity;
         array = new int[capacity];
         size = 0;
     }
 
     public void add(int element){
+        //if array is full will create new array ( size new array = 1,5 size old array)
         if(size == capacity){
             createNewArray(capacity);
         }
+        //if array is empty added new element in position 0
         if(size == 0){
             array[size] = element;
             size++;
@@ -40,30 +45,32 @@ public class MyDynamicArrayList implements Iterable {
     private void createNewArray(int arrayCapacity){
         int[] tempArray = new int[arrayCapacity];
         System.arraycopy(array, 0, tempArray, 0, size);
-        /*for(int i = 0; i < size; i++){
-            tempArray[i] = array[i];
-        }*/
         capacity = arrayCapacity * 3 / 2;
         array = new int[capacity];
         System.arraycopy(tempArray, 0, array, 0, size);
-        /*for(int i = 0; i < size; i++){
-            array[i] = tempArray[i];
-        }*/
     }
 
     public boolean add(int element, int index){
+        //if index more that size of array or array is full will create new array ( size new array = 1,5 index
+        // or 1,5 size old array)
         if(index >= capacity | size == capacity){
             createNewArray(index > size ? index : capacity);
         }
-        int[] tArray = new int[capacity];
+        int[] tempArray = new int[capacity];
+        //adding all elements from old array to the tempArray until index position and
+        // increase their values by the value of the added element
         for(int i = 0; i < index;i++){
-            tArray[i] = array[i] + element;
+            tempArray[i] = array[i] + element;
         }
-        tArray[index] = element;
+        // adding element in tempArray on index position
+        tempArray[index] = element;
+
+        //adding elements from old array to the tempArray after index position and
+        // increase their values by the value of the added element
         for(int i = index; i < size; i++){
-            tArray[i + 1] = array[i] + element;
+            tempArray[i + 1] = array[i] + element;
         }
-        array = tArray;
+        array = tempArray;
         if(index > size - 1){
             size = index + 1;
         }
@@ -75,7 +82,7 @@ public class MyDynamicArrayList implements Iterable {
     public int remove(){
         if(size == 0){
             try {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(getClass().getName() + " is empty");
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -93,19 +100,23 @@ public class MyDynamicArrayList implements Iterable {
     public int remove(int index){
         if(size == 0){
             try {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(getClass().getName() + " is empty");
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
         }
         if(index >= size){
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Specified index is larger than the collection size");
         }
         int temp = array[index];
         int[] tempArray = new int[capacity];
+        //adding all elements from old array to the tempArray until index position and
+        // decrease their values by the value of the removed element (temp)
         for(int i = 0; i < index; i++){
-            tempArray[i] = array[i] - temp;
+            tempArray[i] = array[i] - Math.abs(temp);
         }
+        //adding all elements from old array from index + 1 position to the tempArray in index position and
+        // decrease their values by the value of the removed element (temp)
         for(int i = index + 1; i < size; i++){
             tempArray[i - 1] = array[i] - Math.abs(temp);
         }
@@ -135,7 +146,7 @@ public class MyDynamicArrayList implements Iterable {
     }
     public int findElementByIndex(int index){
         if(index >= size){
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Specified index is larger than the collection size");
         }
         return array[index];
     }
@@ -143,7 +154,7 @@ public class MyDynamicArrayList implements Iterable {
     public int findMaxElement()  {
         if(size == 0){
             try {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(getClass().getName() + " is empty");
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -159,7 +170,7 @@ public class MyDynamicArrayList implements Iterable {
     public int findMinElement() {
         if(size == 0){
             try {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(getClass().getName() + " is empty");
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -176,7 +187,7 @@ public class MyDynamicArrayList implements Iterable {
     public int findAverage(){
         if(size == 0){
             try {
-                throw new NoSuchFieldException();
+                throw new NoSuchFieldException(getClass().getName() + " is empty");
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
