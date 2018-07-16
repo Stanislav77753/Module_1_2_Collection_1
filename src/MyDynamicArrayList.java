@@ -1,3 +1,7 @@
+import myExceptions.MyIllegalArgumentException;
+import myExceptions.MyIndexOutOfBoundsException;
+import myExceptions.MyNoSuchFieldException;
+
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -17,9 +21,18 @@ public class MyDynamicArrayList implements Iterable {
 
     public MyDynamicArrayList(int initCapacity){
         if(initCapacity < 0){
-            throw new IllegalArgumentException("Enter a number greater than -1");
+            try {
+                throw new MyIllegalArgumentException("The argument specified is less than zero. " +
+                        "The initial capacity is set to 10");
+            } catch (MyIllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                capacity = this.initCapacity;
+            }
         }
-        capacity = initCapacity;
+        else{
+            capacity = initCapacity;
+        }
+
         array = new int[capacity];
         size = 0;
     }
@@ -79,34 +92,43 @@ public class MyDynamicArrayList implements Iterable {
         }
         return true;
     }
-    public int remove(){
+    public boolean remove(){
         if(size == 0){
             try {
-                throw new NoSuchFieldException(getClass().getName() + " is empty");
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                throw new MyIndexOutOfBoundsException(getClass().getName() + " is empty");
+            } catch (MyIndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
+                return false;
             }
         }
-        int temp = array[size - 1];
-        int[] tempArray = new int[capacity];
-        for(int i = 0; i < size - 1; i++){
-            tempArray[i] = array[i] - Math.abs(temp);
+        else{
+            int temp = array[size - 1];
+            int[] tempArray = new int[capacity];
+            for(int i = 0; i < size - 1; i++){
+                tempArray[i] = array[i] - Math.abs(temp);
+            }
+            array = tempArray;
+            size--;
         }
-        array = tempArray;
-        size--;
-        return temp;
+        return true;
     }
 
-    public int remove(int index){
+    public boolean remove(int index){
         if(size == 0){
             try {
-                throw new NoSuchFieldException(getClass().getName() + " is empty");
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                throw new MyIndexOutOfBoundsException(getClass().getName() + " is empty");
+            } catch (MyIndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
+                return false;
             }
         }
         if(index >= size){
-            throw new IndexOutOfBoundsException("Specified index is larger than the collection size");
+            try {
+                throw new MyIndexOutOfBoundsException("Specified index is larger than the collection size");
+            } catch (MyIndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
         }
         int temp = array[index];
         int[] tempArray = new int[capacity];
@@ -122,7 +144,7 @@ public class MyDynamicArrayList implements Iterable {
         }
         array = tempArray;
         size--;
-        return temp;
+        return true;
     }
 
     public void trimToSize(){
@@ -144,20 +166,16 @@ public class MyDynamicArrayList implements Iterable {
         }
         return index;
     }
-    public int findElementByIndex(int index){
-        if(index >= size){
-            throw new IndexOutOfBoundsException("Specified index is larger than the collection size");
+    public int findElementByIndex(int index) throws MyIndexOutOfBoundsException {
+        if(index >= size || index < 0){
+            throw new MyIndexOutOfBoundsException("Specified index is larger than the collection size");
         }
         return array[index];
     }
 
-    public int findMaxElement()  {
+    public int findMaxElement() throws MyNoSuchFieldException {
         if(size == 0){
-            try {
-                throw new NoSuchFieldException(getClass().getName() + " is empty");
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
+            throw new MyNoSuchFieldException(getClass().getName() + " is empty");
         }
         int max = array[0];
         for(int i = 1; i < size; i++){
@@ -167,13 +185,9 @@ public class MyDynamicArrayList implements Iterable {
         }
         return max;
     }
-    public int findMinElement() {
+    public int findMinElement() throws MyNoSuchFieldException {
         if(size == 0){
-            try {
-                throw new NoSuchFieldException(getClass().getName() + " is empty");
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
+            throw new MyNoSuchFieldException(getClass().getName() + " is empty");
         }
         int min = array[0];
         for(int i = 1; i < size; i++){
@@ -184,13 +198,9 @@ public class MyDynamicArrayList implements Iterable {
         return min;
     }
 
-    public int findAverage(){
+    public int findAverage() throws MyNoSuchFieldException {
         if(size == 0){
-            try {
-                throw new NoSuchFieldException(getClass().getName() + " is empty");
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
+            throw new MyNoSuchFieldException(getClass().getName() + " is empty");
         }
         int sum = 0;
         for(int i = 0; i < size; i++){
